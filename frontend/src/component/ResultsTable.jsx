@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Swal from 'sweetalert2';
-import 'sweetalert2/dist/sweetalert2.min.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
+
+const API_URL = process.env.REACT_APP_BACKEND_URL ?? "http://localhost:3000";
 
 function ResultsTable() {
   const [data, setData] = useState([]);
@@ -10,11 +12,15 @@ function ResultsTable() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/v1/get-insight');
+        const response = await axios.get(`${API_URL}/api/v1/get-insight`);
         setData(response.data.sections);
       } catch (error) {
-        console.error('Error fetching insights:', error);
-        Swal.fire('Error', 'Failed to fetch data. Please try again later.', 'error');
+        console.error("Error fetching insights:", error);
+        Swal.fire(
+          "Error",
+          "Failed to fetch data. Please try again later.",
+          "error"
+        );
       } finally {
         setLoading(false);
       }
@@ -25,22 +31,26 @@ function ResultsTable() {
 
   const handleDelete = async (id) => {
     Swal.fire({
-      title: 'Are you sure?',
-      text: 'Do you want to delete this item? This action cannot be undone.',
-      icon: 'warning',
+      title: "Are you sure?",
+      text: "Do you want to delete this item? This action cannot be undone.",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`http://localhost:5000/api/v1/${id}`);
+          await axios.delete(`${API_URL}/api/v1/${id}`);
           setData((prevData) => prevData.filter((item) => item.id !== id));
-          Swal.fire('Deleted!', 'The item has been deleted.', 'success');
+          Swal.fire("Deleted!", "The item has been deleted.", "success");
         } catch (error) {
-          console.error('Error deleting insight:', error);
-          Swal.fire('Error', 'Failed to delete the item. Please try again.', 'error');
+          console.error("Error deleting insight:", error);
+          Swal.fire(
+            "Error",
+            "Failed to delete the item. Please try again.",
+            "error"
+          );
         }
       }
     });
@@ -48,20 +58,30 @@ function ResultsTable() {
 
   const handleToggleFavorite = async (id) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/v1/${id}/favorite`);
+      const response = await axios.put(`${API_URL}/api/v1/${id}/favorite`);
       setData((prevData) =>
         prevData.map((item) =>
-          item.id === id ? { ...item, isFavorite: response.data.insight.isFavorite } : item
+          item.id === id
+            ? { ...item, isFavorite: response.data.insight.isFavorite }
+            : item
         )
       );
       Swal.fire(
-        'Success!',
-        `The item has been ${response.data.insight.isFavorite ? 'marked as favorite' : 'unfavorited'}.`,
-        'success'
+        "Success!",
+        `The item has been ${
+          response.data.insight.isFavorite
+            ? "marked as favorite"
+            : "unfavorited"
+        }.`,
+        "success"
       );
     } catch (error) {
-      console.error('Error toggling favorite status:', error);
-      Swal.fire('Error', 'Failed to update the favorite status. Please try again.', 'error');
+      console.error("Error toggling favorite status:", error);
+      Swal.fire(
+        "Error",
+        "Failed to update the favorite status. Please try again.",
+        "error"
+      );
     }
   };
 
@@ -86,7 +106,6 @@ function ResultsTable() {
         <tbody>
           {data.map((item) => (
             <tr key={item.id} className="text-center">
-              
               <td className="border border-gray-300 p-2">{item.domainName}</td>
               <td className="border border-gray-300 p-2">
                 <a
@@ -99,7 +118,9 @@ function ResultsTable() {
                 </a>
               </td>
               <td className="border border-gray-300 p-2">{item.wordCount}</td>
-              <td className="border border-gray-300 p-2">{item.isFavorite ? 'Yes' : 'No'}</td>
+              <td className="border border-gray-300 p-2">
+                {item.isFavorite ? "Yes" : "No"}
+              </td>
               <td className="border border-gray-300 p-2">
                 {item.mediaLinks.map((media) => (
                   <div key={media._id}>
@@ -109,7 +130,8 @@ function ResultsTable() {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                     {item.webLink}{media.url}
+                      {item.webLink}
+                      {media.url}
                     </a>
                   </div>
                 ))}
@@ -124,10 +146,10 @@ function ResultsTable() {
                 <button
                   onClick={() => handleToggleFavorite(item.id)}
                   className={`${
-                    item.isFavorite ? 'bg-orange-500' : 'bg-lime-800'
+                    item.isFavorite ? "bg-orange-500" : "bg-lime-800"
                   } text-white px-2 py-1 rounded-md  hover:bg-opacity-80 mt-4`}
                 >
-                  {item.isFavorite ? 'Unfavorite' : 'Favorite'}
+                  {item.isFavorite ? "Unfavorite" : "Favorite"}
                 </button>
               </td>
             </tr>
