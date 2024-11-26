@@ -3,9 +3,9 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 
-const API_URL = process.env.REACT_APP_BACKEND_URL ?? "http://localhost:3000";
-
 function ResultsTable() {
+  const API_URL = process.env.REACT_APP_BACKEND_URL ?? "http://localhost:3000";
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -90,17 +90,21 @@ function ResultsTable() {
   }
 
   return (
-    <div className="">
+    <div className="overflow-x-auto">
       <h2 className="text-lg font-semibold mb-4">Results</h2>
-      <table className="w-full border-collapse border border-gray-300">
+      <table className="min-w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-100">
-            <th className="border border-gray-300 p-2">Web Link</th>
-            <th className="border border-gray-300 p-2">Domain Name</th>
-            <th className="border border-gray-300 p-2">Word Count</th>
-            <th className="border border-gray-300 p-2">Favorite</th>
-            <th className="border border-gray-300 p-2">Media Links</th>
-            <th className="border border-gray-300 p-2">Actions</th>
+            <th className="border border-gray-300 p-2 text-left">
+              Domain Name
+            </th>
+            <th className="border border-gray-300 p-2 text-left">Web Link</th>
+            <th className="border border-gray-300 p-2 text-left">Word Count</th>
+            <th className="border border-gray-300 p-2 text-left">Favorite</th>
+            <th className="border border-gray-300 p-2 text-left">
+              Media Links
+            </th>
+            <th className="border border-gray-300 p-2 text-left">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -121,7 +125,7 @@ function ResultsTable() {
               <td className="border border-gray-300 p-2">
                 {item.isFavorite ? "Yes" : "No"}
               </td>
-              <td className="border border-gray-300 p-2">
+              <td className="border border-gray-300 p-2 max-w-xs overflow-hidden truncate">
                 {item.mediaLinks.map((media) => (
                   <div key={media._id}>
                     <a
@@ -130,13 +134,13 @@ function ResultsTable() {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {item.webLink}
                       {media.url}
                     </a>
                   </div>
                 ))}
               </td>
-              <td className="border border-gray-300 p-2">
+
+              <td className="border border-gray-300 p-2 space-x-1">
                 <button
                   onClick={() => handleDelete(item.id)}
                   className="bg-violet-800 text-white px-2 py-1 rounded-md hover:bg-violet-600"
@@ -147,7 +151,7 @@ function ResultsTable() {
                   onClick={() => handleToggleFavorite(item.id)}
                   className={`${
                     item.isFavorite ? "bg-orange-500" : "bg-lime-800"
-                  } text-white px-2 py-1 rounded-md  hover:bg-opacity-80 mt-4`}
+                  } text-white px-2 py-1 rounded-md hover:bg-opacity-80 mt-4`}
                 >
                   {item.isFavorite ? "Unfavorite" : "Favorite"}
                 </button>
